@@ -110,6 +110,19 @@ const Navbar = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link
+                      to="/vehicle/GetByLicensePlate"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                      prefetch={false}
+                    >
+                      <Car className="h-5 w-5" />
+                      <span className="sr-only">Vehiculos</span>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Vehiculos</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
                       to="/support/dashboard"
                       className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                       prefetch={false}
@@ -235,126 +248,27 @@ const Navbar = () => {
                   {" "}
                   <NavLink to="/settings">Ajustes</NavLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Soporte</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <NavLink to="/" onClick={logoutSubmit}>
-                    Cerrar Sesión
-                  </NavLink>
+                <DropdownMenuItem onClick={logoutSubmit}>
+                  Cerrar sesión
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </TooltipProvider>
-        </nav>
-      </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
-                <PanelsTopLeft className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="grid gap-6 text-lg font-medium">
-                <NavLink
-                  href="/home"
-                  className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                  prefetch={false}
-                >
-                  <ParkingSquare className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Epark</span>
-                </NavLink>
-                <NavLink
-                  to="/home"
-                  className={getNavLinkClass}
-                  prefetch={false}
-                >
-                  <LayoutDashboard className="h-5 w-5" />
-                  Dashboard
-                </NavLink>
-
-                {userProfile.rolName === "administrador" && (
-                  <>
-                    <NavLink
-                      to="/users"
-                      className={getNavLinkClass}
-                      prefetch={false}
-                    >
-                      <Users className="h-5 w-5" />
-                      Usuarios
-                    </NavLink>
-                    <NavLink
-                      to="/vehicle/dashboard"
-                      className={getNavLinkClass}
-                      prefetch={false}
-                    >
-                      <Car className="h-5 w-5" />
-                      Vehiculos
-                    </NavLink>
-                    <NavLink
-                      to="/upload/dashboard"
-                      className={getNavLinkClass}
-                      prefetch={false}
-                    >
-                      <Paperclip className="h-5 w-5" />
-                      Documentacion
-                    </NavLink>
-                    <NavLink
-                      to="/quadrants/dashboard"
-                      className={getNavLinkClass}
-                      prefetch={false}
-                    >
-                      <ParkingSquare className="h-5 w-5" />
-                      Cuadrantes
-                    </NavLink>
-                    <NavLink
-                      to="/parking-spots"
-                      className={getNavLinkClass}
-                      prefetch={false}
-                    >
-                      <ParkingSquare className="h-5 w-5" />
-                      Estacionamientos
-                    </NavLink>
-                  </>
-                )}
-                <NavLink
-                  to="/support/dashboard"
-                  className={getNavLinkClass}
-                  prefetch={false}
-                >
-                  <MessageCircleQuestion className="h-5 w-5" />
-                  Reclamo
-                </NavLink>
-                <NavLink
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
                   to="/settings"
-                  className={getNavLinkClass}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                   prefetch={false}
                 >
                   <Settings className="h-5 w-5" />
-                  Ajustes
-                </NavLink>
-                <NavLink
-                  to="/profile"
-                  className={getNavLinkClass}
-                  prefetch={false}
-                >
-                  <User className="h-5 w-5" />
-                  Mi Perfil
-                </NavLink>
-                <Button className="bg-red-500">
-                  <NavLink to="/" onClick={logoutSubmit}>
-                    Cerrar Sesión
-                  </NavLink>
-                </Button>
-              </nav>
-            </SheetContent>
-          </Sheet>
-
-          <div className="relative ml-auto flex-1 md:grow-0"></div>
-        </header>
-      </div>
+                  <span className="sr-only">Ajustes</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Ajustes</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </nav>
+      </aside>
     </div>
   );
 };
