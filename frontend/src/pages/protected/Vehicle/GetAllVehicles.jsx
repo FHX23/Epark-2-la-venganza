@@ -35,6 +35,13 @@ import { profile } from "@/services/auth.service";
 
 export default function TableVehicles() {
   const [vehicles, setVehicles] = useState([]);
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const [filters, setFilters] = useState({
+    licensePlate: "",
+    model: "",
+    color: "",
+    brand: "",
+  });
   const { toast } = useToast();
   const [editVehicle, setEditVehicle] = useState(null);
   const [formState, setFormState] = useState({
@@ -53,9 +60,10 @@ export default function TableVehicles() {
           model: vehicle.model,
           color: vehicle.color,
           brand: vehicle.brand,
-          owner: vehicle.user.username, // Mostrar el nombre del dueño
+          owner: vehicle.user.username,
         }));
         setVehicles(formattedData);
+        setFilteredVehicles(formattedData);
       } catch (error) {
         console.error("Error: ", error);
       }
@@ -70,14 +78,21 @@ export default function TableVehicles() {
       setVehicles(
         vehicles.map((vehicle) =>
           vehicle.licensePlate === editVehicle.licensePlate
-            ? { ...formState, owner: vehicle.owner } // Mantener el dueño
+            ? { ...formState, owner: vehicle.owner }
+            : vehicle
+        )
+      );
+      setFilteredVehicles(
+        filteredVehicles.map((vehicle) =>
+          vehicle.licensePlate === editVehicle.licensePlate
+            ? { ...formState, owner: vehicle.owner }
             : vehicle
         )
       );
       toast({
         title: "Vehículo actualizado",
         description: "Los datos del vehículo han sido actualizados correctamente.",
-        className: "bg-[#4CAF50] text-white py-2 px-4 rounded shadow-lg", // Color verde para la alerta
+        className: "bg-[#4CAF50] text-white py-2 px-4 rounded shadow-lg",
       });
       setEditVehicle(null);
     } catch (error) {
@@ -89,7 +104,6 @@ export default function TableVehicles() {
       });
     }
   };
-  
 
   const handleEditClick = (vehicle) => {
     setEditVehicle(vehicle);
@@ -101,6 +115,23 @@ export default function TableVehicles() {
     });
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const handleFilter = () => {
+    const filtered = vehicles.filter((vehicle) => {
+      return (
+        (filters.licensePlate === "" || vehicle.licensePlate.includes(filters.licensePlate)) &&
+        (filters.model === "" || vehicle.model.includes(filters.model)) &&
+        (filters.color === "" || vehicle.color.includes(filters.color)) &&
+        (filters.brand === "" || vehicle.brand.includes(filters.brand))
+      );
+    });
+    setFilteredVehicles(filtered);
+  };
+
   return (
     <>
       <div>
@@ -110,12 +141,49 @@ export default function TableVehicles() {
               <CardHeader className="px-6">
                 <CardTitle>Vehículos</CardTitle>
                 <CardDescription>
-                  Este es un listado de los vehículos en el sistema. Puedes editar sus datos.
+                  Este es un listado de los vehículos en el sistema. Puedes filtrar y editar sus datos.
                 </CardDescription>
+                <div className="flex items-center gap-4 mt-4 flex-wrap">
+                  <Label htmlFor="licensePlate" className="whitespace-nowrap">Patente</Label>
+                  <Input
+                    id="licensePlate"
+                    name="licensePlate"
+                    value={filters.licensePlate}
+                    onChange={handleFilterChange}
+                    className="w-20"
+                  />
+                  <Label htmlFor="model" className="whitespace-nowrap">Modelo</Label>
+                  <Input
+                    id="model"
+                    name="model"
+                    value={filters.model}
+                    onChange={handleFilterChange}
+                    className="w-20"
+                  />
+                  <Label htmlFor="brand" className="whitespace-nowrap">Marca</Label>
+                  <Input
+                    id="brand"
+                    name="brand"
+                    value={filters.brand}
+                    onChange={handleFilterChange}
+                    className="w-20"
+                  />
+                  <Label htmlFor="color" className="whitespace-nowrap">Color</Label>
+                  <Input
+                    id="color"
+                    name="color"
+                    value={filters.color}
+                    onChange={handleFilterChange}
+                    className="w-20"
+                  />
+                  <Button className="bg-[#4CAF50] text-white" onClick={handleFilter}>
+                    Filtrar
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
+                <Table className=" border-gray-300">
+                  <TableHeader className="border-b border-gray-200">
                     <TableRow>
                       <TableHead>Placa</TableHead>
                       <TableHead className="hidden sm:table-cell">Modelo</TableHead>
@@ -126,7 +194,7 @@ export default function TableVehicles() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {vehicles.map((vehicle) => (
+                    {filteredVehicles.map((vehicle) => (
                       <TableRow key={vehicle.licensePlate}>
                         <TableCell>{vehicle.licensePlate}</TableCell>
                         <TableCell className="hidden sm:table-cell">{vehicle.model}</TableCell>
@@ -224,9 +292,10 @@ export default function TableVehicles() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleUpdate}>
-                Guardar cambios
+              <Button variant="outline" onClick={() => setEditVehicle(null)}>
+                Cancelar
               </Button>
+              <Button onClick={handleUpdate}>Actualizar</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
